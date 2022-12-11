@@ -1,69 +1,57 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.5)
+AC_PREREQ([2.71])
+AC_INIT([librat],[1.2.19])
+AC_CONFIG_SRCDIR([src/base64.c])
+AC_CONFIG_HEADERS([src/uclconf.h:src/config.h.in])
 
-AC_INIT(src/base64.c)
+AC_CONFIG_MACRO_DIRS([m4])
+
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 LT_INIT
 
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
 
-AC_HEADER_STDC
-AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(sys/time.h)
-if test "$ac_cv_header_sys_time_h" = "yes"; then
-	AC_HEADER_TIME
-fi
-AC_C_CONST
-AC_TYPE_SIZE_T
+# Checks for libraries.
 
-AC_CHECK_HEADERS(stropts.h sys/filio.h)
+# Checks for header files.
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h malloc.h netdb.h netinet/in.h stdint.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h sys/timeb.h unistd.h])
+AC_CHECK_HEADERS(sys/filio.h)
 AC_CHECK_HEADERS(stdint.h inttypes.h)
 
-###############################################################################
-# Check for standard size types.  The defaults are only valid on some
-# systems so we hope that <inttypes.h> exists when they're wrong.
-AC_CHECK_TYPE(int8_t,  signed char)
-AC_CHECK_TYPE(int16_t, short)
-AC_CHECK_TYPE(int32_t, long)
-AC_CHECK_TYPE(int64_t, long long)
+# Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_UID_T
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_INT64_T
+AC_TYPE_INT8_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
+AC_TYPE_UINT8_T
 
-# Some systems have these in <stdint.h>, just to be difficult...
-AC_CACHE_CHECK(for uint8_t in <stdint.h>, ucl_cv_uint8_t_in_stdint_h,
-	AC_EGREP_HEADER(uint8_t,
-			stdint.h,
-			ucl_cv_uint8_t_in_stdint_h=yes,
-			ucl_cv_uint8_t_in_stdint_h=no))
-if test $ucl_cv_uint8_t_in_stdint_h = "no"
-then
-	 AC_CHECK_TYPE(uint8_t,  unsigned char)
-fi
+AC_C_INLINE
 
-AC_CACHE_CHECK(for uint16_t in <stdint.h>, ucl_cv_uint16_t_in_stdint_h,
-	AC_EGREP_HEADER(uint16_t,
-			stdint.h,
-			ucl_cv_uint16_t_in_stdint_h=yes,
-			ucl_cv_uint16_t_in_stdint_h=no))
-if test $ucl_cv_uint16_t_in_stdint_h = "no"
-then
-	 AC_CHECK_TYPE(uint16_t,  unsigned short)
-fi
-
-AC_CACHE_CHECK(for uint32_t in <stdint.h>, ucl_cv_uint32_t_in_stdint_h,
-	AC_EGREP_HEADER(uint32_t,
-			stdint.h,
-			ucl_cv_uint32_t_in_stdint_h=yes,
-			ucl_cv_uint32_t_in_stdint_h=no))
-if test $ucl_cv_uint32_t_in_stdint_h = "no"
-then
-	 AC_CHECK_TYPE(uint32_t,  unsigned int)
-fi
-
-###############################################################################
-# The following two macros cause autoconf to complain.
+# define target endianness
 AC_C_BIGENDIAN
+if test "x$ac_cv_c_bigendian" = "xyes"; then
+    CPPFLAGS="$CPPFLAGS -DWORDS_BIGENDIAN=1"
+else
+    CPPFLAGS="$CPPFLAGS -DWORDS_BIGENDIAN=0"
+fi
+
+# is char unsigned?
 AC_C_CHAR_UNSIGNED
 #
 # Some of the codecs in rat don't with with unsigned characters. 
@@ -93,13 +81,20 @@ case "$host_os" in
     *mingw*|*mingw32*)
 	    ;;
 	*)
-	    AC_CHECK_FILE(/dev/urandom,AC_DEFINE(HAVE_DEV_URANDOM))
+	    AC_CHECK_FILE(/dev/urandom,AC_DEFINE([HAVE_DEV_URANDOM],[],[has /dev/urandom]))
 		;;
 esac
 
+# Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STRTOD
+AC_CHECK_FUNCS([gethostbyaddr gethostbyname gethostname gettimeofday inet_ntoa memmove memset mkdir modf select socket strcasecmp strchr strcspn strdup strrchr strstr strtol uname])
+
 # If more files than mbus.c use vsnprintf, split it out into
 # vsnprintf.c and add it to AC_REPLACE_FUNCS
-# AC_CHECK_FUNC(vsnprintf,,AC_DEFINE(NEED_VSNPRINTF))
+# AC_CHECK_FUNC(vsnprintf,,AC_DEFINE([NEED_VSNPRINTF],[],[have vsnprintf()]))
 AC_REPLACE_FUNCS(vsnprintf)
 
 ###############################################################################
@@ -108,31 +103,27 @@ AC_REPLACE_FUNCS(vsnprintf)
 #
 # AC_CHECK_FUNC succeeds on our IRIX 6.2 boxes, but it is not 
 # declared anywhere, use egrep header to check (ugh lame, but works)
+dnl AC_CACHE_CHECK(for inet_pton in <arpa/inet.h>, ucl_cv_inet_pton_in_inet_h,
+dnl 	AC_EGREP_HEADER(inet_pton,
+dnl 			arpa/inet.h,
+dnl 			ucl_cv_inet_pton_in_inet_h=yes,
+dnl 			ucl_cv_inet_pton_in_inet_h=no))
+dnl if test $ucl_cv_inet_pton_in_inet_h = "no"
+dnl then
+dnl 	AC_DEFINE([NEED_INET_PTON],[],[inet_pton in <arpa/inet.h>])
+dnl fi
+dnl AC_CACHE_CHECK(for inet_ntop in <arpa/inet.h>, ucl_cv_inet_ntop_in_inet_h,
+dnl 	AC_EGREP_HEADER(inet_ntop,
+dnl 			arpa/inet.h,
+dnl 			ucl_cv_inet_ntop_in_inet_h=yes,
+dnl 			ucl_cv_inet_ntop_in_inet_h=no))
+dnl if test $ucl_cv_inet_ntop_in_inet_h = "no"
+dnl then
+dnl 	AC_DEFINE([NEED_INET_NTOP],[],[inet_ntop in <arpa/inet.h>])
+dnl fi
 
-AC_CACHE_CHECK(for inet_pton in <arpa/inet.h>, ucl_cv_inet_pton_in_inet_h,
-	AC_EGREP_HEADER(inet_pton,
-			arpa/inet.h,
-			ucl_cv_inet_pton_in_inet_h=yes,
-			ucl_cv_inet_pton_in_inet_h=no))
-if test $ucl_cv_inet_pton_in_inet_h = "no"
-then
-	AC_DEFINE(NEED_INET_PTON)
-	EXTRAOBJS="$EXTRAOBJS inet_pton.lo"
-fi
-AC_CACHE_CHECK(for inet_ntop in <arpa/inet.h>, ucl_cv_inet_ntop_in_inet_h,
-	AC_EGREP_HEADER(inet_ntop,
-			arpa/inet.h,
-			ucl_cv_inet_ntop_in_inet_h=yes,
-			ucl_cv_inet_ntop_in_inet_h=no))
-if test $ucl_cv_inet_ntop_in_inet_h = "no"
-then
-	AC_DEFINE(NEED_INET_NTOP)
-	EXTRAOBJS="$EXTRAOBJS inet_ntop.lo"
-fi
-AC_SUBST(EXTRAOBJS)
-#AC_SUBST(LIBOBJS)
-
-# AC_REPLACE_FUNCS(inet_pton inet_ntop)
+AC_REPLACE_FUNCS([inet_pton])
+AC_REPLACE_FUNCS([inet_ntop])
 
 AC_SEARCH_LIBS(socket, socket)
 AC_SEARCH_LIBS(inet_addr, nsl)
@@ -147,7 +138,7 @@ AC_ARG_ENABLE(profile,
 		then
 			CFLAGS="$CFLAGS -pg"
 		else
-			AC_ERROR([Don't know how to enable profiling for $CC])
+			AC_MSG_ERROR(Don't know how to enable profiling for $CC)
 		fi
 	fi])
 
@@ -163,7 +154,7 @@ AC_ARG_ENABLE(bounds,
 			CFLAGS="$CFLAGS -fbounds-checking"
 			LIBS="$LIBS -lcheck"
 		else
-			AC_ERROR([Don't know how to enable profiling for $CC])
+			AC_MSG_ERROR(Don't know how to enable profiling for $CC)
 		fi
 	fi])
 
@@ -174,13 +165,13 @@ AC_ARG_ENABLE(debug,
 	[  --enable-debug          enable debug messages and code],
 	[if test $enableval = yes
 	then
-		AC_DEFINE(DEBUG)
+		AC_DEFINE([DEBUG], [], [enable debug messages and code])
 	fi])
 AC_ARG_ENABLE(debug-mem,
 	[  --enable-debug-mem      enable memory debugging code],
 	[if test $enableval = yes
 	then
-		AC_DEFINE(DEBUG_MEM)
+		AC_DEFINE([DEBUG_MEM], [], [enable memory debugging code])
 	fi])
 
 ###############################################################################
@@ -190,7 +181,7 @@ AC_ARG_ENABLE(ipv6,
         [  --enable-ipv6           enable ipv6],
 	[ case "$enableval" in
 	  yes)	AC_MSG_RESULT(yes)
-		AC_DEFINE(HAVE_IPv6)
+		AC_DEFINE([HAVE_IPv6],[],[enable ipv6])
 		ipv6=yes
 		;;
 	  *)	AC_MSG_RESULT(no)
@@ -325,7 +316,7 @@ AC_CACHE_CHECK(for getipnodebyname in <netdb.h>, ucl_cv_getipnodebyname_in_netdb
 		ucl_cv_getipnodebyname_in_netdb_h=no))
 if test $ucl_cv_getipnodebyname_in_netdb_h
 then
-	AC_DEFINE(HAVE_GETIPNODEBYNAME) 
+	AC_DEFINE([HAVE_GETIPNODEBYNAME],[],[is getipnodebyname() in <netdb.h>]) 
 fi
 
 AC_CACHE_CHECK(for struct addrinfo in <netdb.h>, ucl_cv_st_addrinfo_in_netdb_h,
@@ -335,38 +326,34 @@ AC_CACHE_CHECK(for struct addrinfo in <netdb.h>, ucl_cv_st_addrinfo_in_netdb_h,
 		ucl_cv_st_addrinfo_in_netdb_h=no))
 if test $ucl_cv_st_addrinfo_in_netdb_h
 then
-	AC_DEFINE(HAVE_ST_ADDRINFO) 
+	AC_DEFINE([HAVE_ST_ADDRINFO],[],[have struct addrinfo in <netdb.h>]) 
 fi
 
 AC_CACHE_CHECK(for sin6_len in struct sockaddr_in6, ucl_cv_sin6_len,
-	[AC_TRY_COMPILE([
+	[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 		#include <netinet/in.h>
-	],[
+	]], [[
 		struct sockaddr_in6	s_in;
 		s_in.sin6_len = 0;
-	],
-		ucl_cv_sin6_len=yes,	
-		ucl_cv_sin6_len=no
-	)])
+	]])],[ucl_cv_sin6_len=yes],[ucl_cv_sin6_len=no
+	])])
 if test $ucl_cv_sin6_len = yes
 then
-	AC_DEFINE(HAVE_SIN6_LEN) 
+	AC_DEFINE([HAVE_SIN6_LEN],[],[have sin6_len in struct sockaddr_in6]) 
 fi
 
 AC_CACHE_CHECK(for msg_control in struct msghdr, ucl_cv_control,
-        [AC_TRY_COMPILE([
+        [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
                 #include <sys/types.h>
 		#include <sys/socket.h>
-        ],[
+        ]], [[
                 struct msghdr msg;
                 msg.msg_control = 0;
-        ],
-                ucl_cv_control=yes,
-                ucl_cv_control=no
-        )])
+        ]])],[ucl_cv_control=yes],[ucl_cv_control=no
+        ])])
 if test $ucl_cv_control = yes
 then
-        AC_DEFINE(HAVE_MSGHDR_MSGCTRL)
+        AC_DEFINE([HAVE_MSGHDR_MSGCTRL],[],[msg_control in struct msghdr])
 fi
 
 ###############################################################################
@@ -405,19 +392,17 @@ case "$host_os" in
 	save_LIBS="$LIBS"
 	for curlib in ws2_32 wsock32; do
 		LIBS="$LIBS -l$curlib"
-		AC_TRY_LINK([
+		AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 			char __attribute__((stdcall)) socket(int,int,int);
 				char __attribute__((stdcall)) select(int,int,int,int,int);
 				char __attribute__((stdcall)) closesocket(int);
 				char __attribute__((stdcall)) gethostname(int,int);
-				],
-				[
+				]], [[
 				socket(1,2,3);
 				select(1,2,3,4,5);
 				closesocket(1);
 				gethostname(1,2);
-				],
-				have_winsock=yes, have_winsock=no)
+				]])],[have_winsock=yes],[have_winsock=no])
 
 		if test $have_winsock = yes; then
 			ac_cv_func_select='yes'
@@ -435,5 +420,12 @@ esac
 
 ###############################################################################
 # Done, create the output files....
-AC_CONFIG_HEADER(src/uclconf.h:src/config.h.in)
-AC_OUTPUT(Makefile doc/Makefile examples/Makefile examples/rtp/Makefile examples/sdp/Makefile examples/sap/Makefile src/Makefile tests/Makefile)
+AC_CONFIG_FILES([Makefile
+                 doc/Makefile
+                 examples/Makefile
+                 examples/rtp/Makefile
+                 examples/sdp/Makefile
+                 examples/sap/Makefile
+                 src/Makefile
+                 tests/Makefile])
+AC_OUTPUT

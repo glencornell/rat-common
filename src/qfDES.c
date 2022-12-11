@@ -11,6 +11,7 @@ Added 2 August 1996, Saleem
 #include "config_win32.h"
 #include "qfDES.h"
 #include "crypt_random.h"
+#include <time.h>
 
 typedef uint32_t Word;
 
@@ -575,7 +576,6 @@ const QFDES_mode   	 mode,
     static Word 	*oldKey = (Word *) desKey,
          		*keys   = (Word *) desKeys;
     static QFDES_what 	oldWhat;
-    static QFDES_mode 	oldMode;
     unsigned char 	b0[8], b1[8]; /* feedback blocks */
     Word 		*newKey = (Word *) key, /* key from user */
          		*text,                  /* text to be [en|de]crypted */
@@ -597,7 +597,6 @@ const QFDES_mode   	 mode,
 
         oldKey[0] = newKey[0]; oldKey[1] = newKey[1];
         oldWhat   = what;
-        oldMode   = mode;
 
         PC1(newKey, c, d);
 

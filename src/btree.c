@@ -39,8 +39,7 @@ struct s_btree {
 #define BTREE_MAGIC      0x10101010
 #define BTREE_NODE_MAGIC 0x01010101
 
-static int btree_count;
-
+#ifdef DEBUG
 static void
 btree_validate_node(btree_node_t *node, btree_node_t *parent)
 {
@@ -54,6 +53,7 @@ btree_validate_node(btree_node_t *node, btree_node_t *parent)
 		btree_validate_node(node->right, node);
 	}
 }
+#endif /* !DEBUG */
 
 static void
 btree_validate(btree_t *t)
