@@ -1,7 +1,7 @@
 #
 # Makefile for the RTP example.
 #
-bin_PROGRAMS = rtpdemo
+noinst_PROGRAMS = rtpdemo
 
 rtpdemo_SOURCES = rtpdemo.c
 rtpdemo_LDADD =  $(top_builddir)/src/libuclmmbase.la

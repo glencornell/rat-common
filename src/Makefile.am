@@ -6,49 +6,27 @@ lib_LTLIBRARIES = libuclmmbase.la
 libuclmmbase_la_CFLAGS=-Wunused-result
 libuclmmbase_la_SOURCES = \
 	asarray.c \
-	asarray.h \
 	base64.c \
-	base64.h \
 	btree.c \
-	btree.h \
 	crypt_random.c \
-	crypt_random.h \
 	debug.c \
-	debug.h \
 	drand48.c \
-	drand48.h \
 	hmac.c \
-	hmac.h \
 	mbus_addr.c \
-	mbus_addr.h \
 	mbus_config.c \
-	mbus_config.h \
 	mbus.c \
-	mbus.h \
 	mbus_parser.c \
-	mbus_parser.h \
 	md5.c \
-	md5.h \
 	memory.c \
-	memory.h \
 	net_udp.c \
-	net_udp.h \
 	ntp.c \
-	ntp.h \
 	qfDES.c \
-	qfDES.h \
 	rijndael-alg-fst.c \
-	rijndael-alg-fst.h \
 	rijndael-api-fst.c \
-	rijndael-api-fst.h \
 	rtp.c \
-	rtp.h \
 	sap.c \
-	sap.h \
 	sdp.c \
-	sdp.h \
-	util.c \
-	util.h
+	util.c
 
 # if NEED_INET_PTON
 # libuclmmbase_la_SOURCES+=inet_pton.c inet_pton.h
@@ -61,6 +39,31 @@ libuclmmbase_la_SOURCES = \
 nodist_libuclmmbase_la_SOURCES = version.h
 BUILT_SOURCES = version.h
 CLEANFILES = version.h
+
+uclmmbaseincludedir=$(includedir)/uclmmbase
+uclmmbaseinclude_HEADERS = \
+	asarray.h \
+	base64.h \
+	btree.h \
+	crypt_random.h \
+	debug.h \
+	drand48.h \
+	hmac.h \
+	mbus_addr.h \
+	mbus_config.h \
+	mbus.h \
+	mbus_parser.h \
+	md5.h \
+	memory.h \
+	net_udp.h \
+	ntp.h \
+	qfDES.h \
+	rijndael-alg-fst.h \
+	rijndael-api-fst.h \
+	rtp.h \
+	sap.h \
+	sdp.h \
+	util.h
 
 version.h: $(top_srcdir)/VERSION
 	sed -e 's/.*/#define CCL_VERSION "v&"/' $? > $@

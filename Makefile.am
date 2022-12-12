@@ -5,3 +5,4 @@ SUBDIRS=src tests examples $(OPTDOC)
 
 ACLOCAL_AMFLAGS=-I m4
 
+pkgconfig_DATA = libuclmmbase.pc

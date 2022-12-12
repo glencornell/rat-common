@@ -38,6 +38,7 @@ install-sh
 lib*.a
 lib*.so
 libtool
+libuclmmbase.pc
 ltmain.sh
 m4/
 missing

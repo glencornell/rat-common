@@ -1,7 +1,7 @@
 #
 # Makefile for the SAP example.
 #
-bin_PROGRAMS = sapdemo
+noinst_PROGRAMS = sapdemo
 
 sapdemo_SOURCES = sapdemo.c
 sapdemo_LDADD =  $(top_builddir)/src/libuclmmbase.la

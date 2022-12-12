@@ -20,6 +20,8 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+PKG_INSTALLDIR
+
 # Checks for libraries.
 
 # Checks for header files.
@@ -427,5 +429,6 @@ AC_CONFIG_FILES([Makefile
                  examples/sdp/Makefile
                  examples/sap/Makefile
                  src/Makefile
-                 tests/Makefile])
+                 tests/Makefile
+                 libuclmmbase.pc])
 AC_OUTPUT

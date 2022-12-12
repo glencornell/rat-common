@@ -1,7 +1,7 @@
 #
 # Makefile for the SDP example.
 #
-bin_PROGRAMS = sdpdemo
+noinst_PROGRAMS = sdpdemo
 
 sdpdemo_SOURCES = sdpdemo.c
 sdpdemo_LDADD =  $(top_builddir)/src/libuclmmbase.la
