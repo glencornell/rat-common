@@ -47,11 +47,9 @@ AC_C_INLINE
 
 # define target endianness
 AC_C_BIGENDIAN
-if test "x$ac_cv_c_bigendian" = "xyes"; then
-    CPPFLAGS="$CPPFLAGS -DWORDS_BIGENDIAN=1"
-else
-    CPPFLAGS="$CPPFLAGS -DWORDS_BIGENDIAN=0"
-fi
+AS_IF([test "x$ac_cv_c_bigendian" = "xyes"],
+            AC_DEFINE([WORDS_BIGENDIAN],[1],[Define to 1 if the target is a big endian architecture]),
+            AC_DEFINE([WORDS_BIGENDIAN],[0],[Define to 1 if the target is a big endian architecture]))
 
 # is char unsigned?
 AC_C_CHAR_UNSIGNED
