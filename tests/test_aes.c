@@ -363,27 +363,27 @@ static void makeKATs(const char *vkFile, const char *vtFile, const char *tblFile
 		tblFile, SUBMITTER);
 	fflush(fp);
 
-	if (NULL != (fp2 = fopen("tests/test_aes.table.128", "r"))) {
+	if (NULL != (fp2 = fopen("test_aes.table.128", "r"))) {
 		rijndaelTKAT(fp, 128, fp2);
 		fclose(fp2);
 	} else {
-		printf("Table Known Answer test expects file tests/test_aes.table.128\n");
+		printf("Table Known Answer test expects file test_aes.table.128\n");
 		fclose(fp);
 		exit(EXIT_FAILURE);
 	}
-	if (NULL != (fp2 = fopen("tests/test_aes.table.192", "r"))) {
+	if (NULL != (fp2 = fopen("test_aes.table.192", "r"))) {
 		rijndaelTKAT(fp, 192, fp2);
 		fclose(fp2);
 	} else {
-		printf("Table Known Answer test expects file tests/test_aes.table.192\n");
+		printf("Table Known Answer test expects file test_aes.table.192\n");
 		fclose(fp);
 		exit(EXIT_FAILURE);		
 	}
-	if (NULL != (fp2 = fopen("tests/test_aes.table.256", "r"))) {
+	if (NULL != (fp2 = fopen("test_aes.table.256", "r"))) {
 		rijndaelTKAT(fp, 256, fp2);
 		fclose(fp2);
 	} else {
-		printf("Table Known Answer test expects file tests/test_aes.table.192\n");
+		printf("Table Known Answer test expects file test_aes.table.192\n");
 		fclose(fp);
 		exit(EXIT_FAILURE);
 	}
@@ -778,19 +778,19 @@ test_aes(void)
 	printf("AES (Known answer tests) .............. "); 
 	fflush(stdout);
 	makeKATs ("ecb_vk.txt", "ecb_vt.txt", "ecb_tbl.txt", "ecb_iv.txt");
-	compare_files("ecb_vk.txt",  "tests/test_aes.results.ecb_vk.txt");
-	compare_files("ecb_vt.txt",  "tests/test_aes.results.ecb_vt.txt");
-	compare_files("ecb_tbl.txt", "tests/test_aes.results.ecb_tbl.txt");
-	compare_files("ecb_iv.txt",  "tests/test_aes.results.ecb_iv.txt");
+	compare_files("ecb_vk.txt",  "test_aes.results.ecb_vk.txt");
+	compare_files("ecb_vt.txt",  "test_aes.results.ecb_vt.txt");
+	compare_files("ecb_tbl.txt", "test_aes.results.ecb_tbl.txt");
+	compare_files("ecb_iv.txt",  "test_aes.results.ecb_iv.txt");
 	printf("pass\n");
 
 	printf("AES (Monte Carlo tests) ..."); 
 	fflush(stdout);
 	makeMCTs ("ecb_e_m.txt", "ecb_d_m.txt", "cbc_e_m.txt", "cbc_d_m.txt");
-	compare_files("ecb_e_m.txt", "tests/test_aes.results.ecb_e_m.txt");
-	compare_files("ecb_d_m.txt", "tests/test_aes.results.ecb_d_m.txt");
-	compare_files("cbc_e_m.txt", "tests/test_aes.results.cbc_e_m.txt");
-	compare_files("cbc_d_m.txt", "tests/test_aes.results.cbc_d_m.txt");
+	compare_files("ecb_e_m.txt", "test_aes.results.ecb_e_m.txt");
+	compare_files("ecb_d_m.txt", "test_aes.results.ecb_d_m.txt");
+	compare_files("cbc_e_m.txt", "test_aes.results.cbc_e_m.txt");
+	compare_files("cbc_d_m.txt", "test_aes.results.cbc_d_m.txt");
 	printf(" pass\n");
 	return 0;
 }

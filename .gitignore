@@ -45,4 +45,7 @@ missing
 src/Makefile
 src/uclconf.h
 src/version.h
+test-driver
+tests/test-*.log
+tests/test-*.trs
 tests/test-libcommon

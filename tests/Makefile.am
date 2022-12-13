@@ -1,7 +1,8 @@
 #
 # Makefile for the tests
 #
-noinst_PROGRAMS = test-libcommon
+TESTS = test-libcommon
+check_PROGRAMS = test-libcommon
 
 test_libcommon_SOURCES = \
 	test_base64.c \
