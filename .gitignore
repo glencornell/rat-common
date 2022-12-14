@@ -43,6 +43,7 @@ ltmain.sh
 m4/
 missing
 src/Makefile
+src/stamp-h1
 src/uclconf.h
 src/version.h
 test-driver
