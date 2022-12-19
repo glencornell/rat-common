@@ -233,7 +233,7 @@ block_release_all(void)
 }
 
 void
-purge_chars(char *src, char *to_go)
+purge_chars(char *src, const char *to_go)
 {
         char *r, *w;
         r = w = src;

@@ -3,12 +3,12 @@
  * AUTHOR:   Colin Perkins
  * MODIFIED: Orion Hodson
  *           Markus Germeier
- * 
+ *
  * Copyright (c) 1997-2000 University College London
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, is permitted provided that the following conditions 
+ * modification, is permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
@@ -97,7 +97,7 @@ struct mbus {
 	int		 	  encrkeylen;
 	struct timeval	 	  last_heartbeat;		/* Last time we sent a heartbeat message */
 	struct mbus_config	 *cfg;
-	void (*cmd_handler)(char *src, char *cmd, char *arg, void *dat);
+	void (*cmd_handler)(const char *src, const char *cmd, char *arg, void *dat);
 	void (*err_handler)(int seqnum, int reason);
 	uint32_t		  magic;			/* For debugging...                                             */
 	uint32_t		  index;
@@ -144,13 +144,13 @@ static void mbus_msg_validate(struct mbus_msg *m)
 	for (i = m->num_cmds + 1; i < MBUS_MAX_QLEN; i++) {
 		assert(m->cmd_list[i] == NULL);
 		assert(m->arg_list[i] == NULL);
-	}	
+	}
 	assert(m->dest != NULL);
 #endif
 	assert(m->magic == MBUS_MSG_MAGIC);
 }
 
-static void store_other_addr(struct mbus *m, char *a)
+static void store_other_addr(struct mbus *m, const char *a)
 {
 	/* This takes the address a and ensures it is stored in the   */
 	/* m->other_addr field of the mbus structure. The other_addr  */
@@ -179,14 +179,14 @@ static void store_other_addr(struct mbus *m, char *a)
 			m->other_addr[i] = NULL;
 			m->other_hello[i] = NULL;
 		}
-		
+
 	}
 	m->other_hello[m->num_other_addr]=(struct timeval *)xmalloc(sizeof(struct timeval));
 	gettimeofday(m->other_hello[m->num_other_addr],NULL);
 	m->other_addr[m->num_other_addr++] = xstrdup(a);
 }
 
-static void remove_other_addr(struct mbus *m, char *a)
+static void remove_other_addr(struct mbus *m, const char *a)
 {
 	/* Removes the address a from the m->other_addr field of the */
 	/* mbus structure.                                           */
@@ -213,7 +213,7 @@ static void remove_inactiv_other_addr(struct mbus *m, struct timeval t, int inte
 	/* Remove addresses we haven't heard from for about 5 * interval */
 	/* Count backwards so it is safe to remove entries               */
 	int i;
-    
+
 	mbus_validate(m);
 
 	for (i=m->num_other_addr-1; i>=0; i--){
@@ -224,7 +224,7 @@ static void remove_inactiv_other_addr(struct mbus *m, struct timeval t, int inte
 	}
 }
 
-int mbus_addr_valid(struct mbus *m, char *addr)
+int mbus_addr_valid(struct mbus *m, const char *addr)
 {
 	int	i;
 
@@ -238,7 +238,7 @@ int mbus_addr_valid(struct mbus *m, char *addr)
 	return FALSE;
 }
 
-static int mbus_addr_unique(struct mbus *m, char *addr)
+static int mbus_addr_unique(struct mbus *m, const char *addr)
 {
 	int     i, n = 0;
 
@@ -307,7 +307,7 @@ static void mb_send(struct mbus *m)
 	char		digest[16];
 	int		len;
 	unsigned char	initVec[8] = {0,0,0,0,0,0,0,0};
- 
+
 	mbus_validate(m);
 
       *mb_bufpos = '\0';
@@ -315,13 +315,13 @@ static void mb_send(struct mbus *m)
 	assert(strlen(mb_buffer) < MBUS_BUF_SIZE);
 
 	/* Pad to a multiple of 8 bytes, so the encryption can work... */
-	
+
       if (m->encrkey != NULL) {
 	    while (((mb_bufpos - mb_buffer - (MBUS_AUTH_LEN+1)) % 8) != 0) {
 		*(mb_bufpos++) = '\0';
 	}
       }
-      
+
 	len = mb_bufpos - mb_buffer;
 	assert(len < MBUS_BUF_SIZE);
 	assert(strlen(mb_buffer) < MBUS_BUF_SIZE);
@@ -331,8 +331,8 @@ static void mb_send(struct mbus *m)
 	if (m->encrkey != NULL) {
 		/* Encrypt... */
 		memset(mb_cryptbuf, 0, MBUS_BUF_SIZE);
-	    memcpy(mb_cryptbuf, 
-		   mb_buffer + MBUS_AUTH_LEN + 1, 
+	    memcpy(mb_cryptbuf,
+		   mb_buffer + MBUS_AUTH_LEN + 1,
 		   len - (MBUS_AUTH_LEN+1));
 	    assert(((len - (MBUS_AUTH_LEN+1)) % 8) == 0);
 		assert(len < MBUS_BUF_SIZE);
@@ -343,7 +343,7 @@ static void mb_send(struct mbus *m)
 	    memcpy(mb_buffer + (MBUS_AUTH_LEN+1), mb_cryptbuf, len);
       }
       xmemchk();
-      
+
       if (m->hashkey != NULL) {
 	    /* Authenticate... */
 	    hmac_md5((unsigned char *)mb_buffer + MBUS_AUTH_LEN+1, len - (MBUS_AUTH_LEN+1), (unsigned char *)m->hashkey, m->hashkeylen, (unsigned char *)digest);
@@ -356,7 +356,7 @@ static void mb_send(struct mbus *m)
 	xfree(mb_buffer);
 }
 
-static void resend(struct mbus *m, struct mbus_msg *curr) 
+static void resend(struct mbus *m, struct mbus_msg *curr)
 {
 	/* Don't need to check for buffer overflows: this was done in mbus_send() when */
 	/* this message was first transmitted. If it was okay then, it's okay now.     */
@@ -407,7 +407,7 @@ void mbus_retransmit(struct mbus *m)
 		xfree(m->waiting_ack);
 		m->waiting_ack = NULL;
 		return;
-	} 
+	}
 	/* Note: We only send one retransmission each time, to avoid
 	 * overflowing the receiver with a burst of requests...
 	 */
@@ -420,7 +420,7 @@ void mbus_retransmit(struct mbus *m)
 		debug_msg("Reliable mbus message resending after 750ms\n");
 		resend(m, curr);
 		return;
-	} 
+	}
 	if ((diff > 250) && (curr->retransmit_count == 0)) {
 		resend(m, curr);
 		return;
@@ -437,7 +437,7 @@ void mbus_heartbeat(struct mbus *m, int interval)
 
 	gettimeofday(&curr_time, NULL);
 	if (curr_time.tv_sec - m->last_heartbeat.tv_sec >= interval) {
-                m->seqnum=(++m->seqnum)%999999;
+                m->seqnum=(m->seqnum + 1)%999999;
 	        mb_header(m->seqnum, curr_time, 'U', m->addr, "()", -1);
 		mb_add_command("mbus.hello", "");
 		mb_send(m);
@@ -461,9 +461,9 @@ int mbus_sent_all(struct mbus *m)
 	return (m->cmd_queue == NULL) && (m->waiting_ack == NULL);
 }
 
-struct mbus *mbus_init(void  (*cmd_handler)(char *src, char *cmd, char *arg, void *dat), 
+struct mbus *mbus_init(void  (*cmd_handler)(const char *src, const char *cmd, char *arg, void *dat),
 		       void  (*err_handler)(int seqnum, int reason),
-		       char  *addr)
+		       const char  *addr)
 {
 	struct mbus		*m;
 	struct mbus_key	 	 k;
@@ -534,7 +534,7 @@ struct mbus *mbus_init(void  (*cmd_handler)(char *src, char *cmd, char *arg, voi
 	return m;
 }
 
-void mbus_cmd_handler(struct mbus *m, void  (*cmd_handler)(char *src, char *cmd, char *arg, void *dat))
+void mbus_cmd_handler(struct mbus *m, void  (*cmd_handler)(const char *src, const char *cmd, char *arg, void *dat))
 {
 	mbus_validate(m);
 	m->cmd_handler = cmd_handler;
@@ -544,7 +544,7 @@ static void mbus_flush_msgs(struct mbus_msg **queue)
 {
         struct mbus_msg *curr, *next;
         int i;
-	
+
         curr = *queue;
         while(curr) {
                 next = curr->next;
@@ -559,7 +559,7 @@ static void mbus_flush_msgs(struct mbus_msg **queue)
 	*queue = NULL;
 }
 
-void mbus_exit(struct mbus *m) 
+void mbus_exit(struct mbus *m)
 {
         int i;
 
@@ -644,7 +644,7 @@ void mbus_send(struct mbus *m)
 			mb_add_command(curr->cmd_list[i], curr->arg_list[i]);
 		}
 		mb_send(m);
-		
+
 		m->cmd_queue = curr->next;
 		if (curr->reliable) {
 			/* Reliable message, wait for the ack... */
@@ -707,9 +707,9 @@ void mbus_qmsg(struct mbus *m, const char *dest, const char *cmnd, const char *a
 	curr->retransmit_count = 0;
 	curr->message_size     = alen + 60 + strlen(dest) + strlen(m->addr);
     /* Wrap seqnum on 999999 - Keeping seqnum to 6 digits - which is assumed
-	 * to be the case for a few functions in mbus. Longer seqnum's led to 
+	 * to be the case for a few functions in mbus. Longer seqnum's led to
 	 * memory errors and aborts() */
-	m->seqnum			   = (++m->seqnum)%999999;
+	m->seqnum	       = (m->seqnum + 1)%999999;
 	curr->seqnum           = m->seqnum;
 	curr->reliable         = reliable;
 	curr->complete         = FALSE;
@@ -769,7 +769,7 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 	mbus_validate(m);
 
       	//debug_msg("receiving\n");
-	
+
 	rx = FALSE;
 	loop_count = 0;
 	while (loop_count++ < 10) {
@@ -781,7 +781,7 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 		udp_fd_set( &rfd, &max_fd, m->s);
 		t.tv_sec  = timeout->tv_sec;
 		t.tv_usec = timeout->tv_usec;
-                if ((udp_select( &rfd, max_fd, &t) > 0) && 
+                if ((udp_select( &rfd, max_fd, &t) > 0) &&
 		    udp_fd_isset( &rfd, &max_fd, m->s)) {
 			buffer_len = udp_recv(m->s, buffer, MBUS_BUF_SIZE);
 			if (buffer_len > 0) {
@@ -795,7 +795,7 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 
 	    /* check authentication */
 	    auth = buffer;
-		
+
 	    /* Check that the packet authenticates correctly... */
 	    authlen = 0;
 	    if(m->hashkey != NULL){
@@ -807,11 +807,11 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 			continue;
 		  }
 	    }
-		
+
 	    buffer += authlen+1;
 	    buffer_len -= authlen+1;
-		
-		
+
+
 		if (m->encrkey != NULL) {
 			/* Decrypt the message... */
 			if ((buffer_len % 8) != 0) {
@@ -834,8 +834,8 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 
 	    buffer[buffer_len] = '\0';
 	    assert(strlen(buffer) <= MBUS_BUF_SIZE);
-		
-	    
+
+
 		mp = mbus_parse_init(buffer);
 		/* remove trailing 0 bytes */
 		npos = (char *) strchr(buffer,'\0');
@@ -923,13 +923,13 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 				sprintf(newseq, "(%6d)", seq);	/* size allocated in mb_header */
 
 				gettimeofday(&t, NULL);
-                                m->seqnum=(++m->seqnum)%999999;
+                                m->seqnum=(m->seqnum + 1)%999999;
 				mb_header(m->seqnum, t, 'U', m->addr, newsrc, seq);
 				mb_send(m);
 
 				/* Record sequence number of last reliable message from each source.
 				   If the next message we receive has the same source and same sequence
-				   number then it is a duplicate and we ignore it.  
+				   number then it is a duplicate and we ignore it.
 				*/
 				if (asarray_lookup (seq_numbers, newsrc, &value)) {
 					if (strcmp (value, newseq) == 0) {
@@ -960,7 +960,7 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 					/* to do housekeeping of our list of known mbus sources...             */
 					if (strcmp(cmd, "mbus.bye") == 0) {
 						remove_other_addr(m, newsrc);
-					} 
+					}
 					if (strcmp(cmd, "mbus.hello") == 0) {
 						/* Mark this source as activ. We remove dead sources in mbus_heartbeat */
 						store_other_addr(m, newsrc);
@@ -987,14 +987,14 @@ int mbus_recv(struct mbus *m, void *data, struct timeval *timeout)
 
 struct mbus_rz {
 	char		*peer;
-	char		*token;
+	const char	*token;
 	struct mbus	*m;
 	void		*data;
 	int		 mode;
-	void (*cmd_handler)(char *src, char *cmd, char *args, void *data);
+	void (*cmd_handler)(const char *src, const char *cmd, char *args, void *data);
 };
 
-static void rz_handler(char *src, char *cmd, char *args, void *data)
+static void rz_handler(const char *src, const char *cmd, char *args, void *data)
 {
 	struct mbus_rz		*r = (struct mbus_rz *) data;
 	struct mbus_parser	*mp;
@@ -1024,7 +1024,7 @@ static void rz_handler(char *src, char *cmd, char *args, void *data)
 	}
 }
 
-char *mbus_rendezvous_waiting(struct mbus *m, char *addr, char *token, void *data, const long rendezvous_timeout_usec)
+char *mbus_rendezvous_waiting(struct mbus *m, const char *addr, const char *token, void *data, const long rendezvous_timeout_usec)
 {
 	/* Loop, sending mbus.waiting(token) to "addr", until we get mbus.go(token) */
 	/* back from our peer. Any other mbus commands received whilst waiting are  */
@@ -1033,7 +1033,7 @@ char *mbus_rendezvous_waiting(struct mbus *m, char *addr, char *token, void *dat
 	struct timeval	 timeout;
 	struct mbus_rz	*r;
         int              waiting_limitcount;
-        
+
         /* Calculate number of loop iterations equivalent to timeout
            if its zero then wait forever.....*/
         waiting_limitcount = rendezvous_timeout_usec/100000;
@@ -1049,7 +1049,7 @@ char *mbus_rendezvous_waiting(struct mbus *m, char *addr, char *token, void *dat
 	r->cmd_handler = m->cmd_handler;
 	m->cmd_handler = rz_handler;
 	token_e        = mbus_encode_str(token);
-	
+
         while (r->peer == NULL) {
 		timeout.tv_sec  = 0;
 		timeout.tv_usec = 100000;
@@ -1073,7 +1073,7 @@ char *mbus_rendezvous_waiting(struct mbus *m, char *addr, char *token, void *dat
 	return peer;
 }
 
-char *mbus_rendezvous_go(struct mbus *m, char *token, void *data, const long rendezvous_timeout_usec)
+char *mbus_rendezvous_go(struct mbus *m, const char *token, void *data, const long rendezvous_timeout_usec)
 {
 	/* Wait until we receive mbus.waiting(token), then send mbus.go(token) back to   */
 	/* the sender of that message. Whilst waiting, other mbus commands are processed */

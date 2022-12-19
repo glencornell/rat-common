@@ -3,17 +3,17 @@
  * AUTHOR:   Ivan R. Judson  <judson@mcs.anl.gov>
  *
  * The routines in this file implement parsing and construction of data
- * that's compliant with the Session Description Protocol, as specified 
+ * that's compliant with the Session Description Protocol, as specified
  * in RFC draft-ietf-mmusic-sdp-new-08.
  *
- * $Revision: 4412 $ 
+ * $Revision: 4412 $
  * $Date: 2009-04-09 03:13:00 -0700 (Thu, 09 Apr 2009) $
- * 
+ *
  * Copyright (c) 2002 Argonne National Laboratory/University of Chicago
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, is permitted provided that the following conditions 
+ * modification, is permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
@@ -48,7 +48,7 @@ sdp_check_key(char keylist[], char *currentkey, char key)
 {
   char *tempkey = keylist;
 
-  while(*tempkey != key) 
+  while(*tempkey != key)
     if(*tempkey != keylist[strlen(keylist)])
       tempkey++;
     else
@@ -83,11 +83,11 @@ sdp_handle_session_key(sdp *session, char key, char *value)
     network = xmalloc(sizeof(sdp_network));
     memset (network, 0, sizeof(sdp_network));
 
-    sscanf(value, "%as %as %ld %as %as %as\n", 
-	   &(session->username),&(session->session_id), &(session->version), 
-	   &(network->network_type), &(network->address_type), 
+    sscanf(value, "%ms %ms %ld %ms %ms %ms\n",
+	   &(session->username),&(session->session_id), &(session->version),
+	   &(network->network_type), &(network->address_type),
 	   &(network->address));
- 
+
     network->number_of_addresses = 1;
     session->network = network;
 
@@ -111,12 +111,12 @@ sdp_handle_session_key(sdp *session, char key, char *value)
     network = xmalloc(sizeof(sdp_network));
     memset (network, 0, sizeof(sdp_network));
 
-    sscanf(value, "%as %as %as\n", &(network->network_type),
+    sscanf(value, "%ms %ms %ms\n", &(network->network_type),
 	   &(network->address_type), &(network->address));
 
     network->number_of_addresses = 1;
 
-    if(session->network != NULL) 
+    if(session->network != NULL)
       session->network = network;
     else
       xfree(network);
@@ -126,11 +126,11 @@ sdp_handle_session_key(sdp *session, char key, char *value)
     bwm = xmalloc(sizeof(sdp_bandwidth_modifier));
     memset (bwm, 0, sizeof(sdp_bandwidth_modifier));
 
-    sscanf(value, "%a[^:]:%a[^\n]", &(bwm->modifier), &(bwm->value));
+    sscanf(value, "%ms[^:]:%ms[^\n]", &(bwm->modifier), &(bwm->value));
 
     if(session->bandwidth_modifier == NULL)
       session->bandwidth_modifier = bwm;
-    else 
+    else
       xfree(bwm);
 
     break;
@@ -142,16 +142,16 @@ sdp_handle_session_key(sdp *session, char key, char *value)
     repeat = xmalloc(sizeof(sdp_repeat));
     memset (repeat, 0, sizeof(sdp_repeat));
 
-    sscanf(value, "%as %as %as\n", &(repeat->interval), &(repeat->duration), 
+    sscanf(value, "%ms %ms %ms\n", &(repeat->interval), &(repeat->duration),
 	   &(repeat->offsets));
 
     if(session->repeats == NULL)
       session->repeats = repeat;
     else {
       curr_repeat = session->repeats;
-      while(curr_repeat != NULL) 
+      while(curr_repeat != NULL)
 	curr_repeat = curr_repeat->next;
-      curr_repeat->next = repeat; 
+      curr_repeat->next = repeat;
     }
     break;
   case 'z':
@@ -167,7 +167,7 @@ sdp_handle_session_key(sdp *session, char key, char *value)
     encrypt = xmalloc(sizeof(sdp_encryption));
     memset(encrypt, 0, sizeof(sdp_encryption));
 
-    sscanf(value, "%a[^:]:%a[^\n]", &(encrypt->method), &(encrypt->key));
+    sscanf(value, "%ms[^:]:%ms[^\n]", &(encrypt->method), &(encrypt->key));
 
     if(session->encryption == NULL)
       session->encryption = encrypt;
@@ -189,7 +189,7 @@ sdp_handle_session_key(sdp *session, char key, char *value)
       attr->value = NULL;
     else {
       attr->value = xmalloc(strlen(value) - n_char + 1);
-      memset(attr->value, '\0', strlen(value) - n_char + 1); 
+      memset(attr->value, '\0', strlen(value) - n_char + 1);
       strncpy(attr->value, value+n_char+1, strlen(value) - n_char);
     }
 
@@ -199,15 +199,15 @@ sdp_handle_session_key(sdp *session, char key, char *value)
       curr_attr = session->attributes;
       while(curr_attr->next != NULL)
 	curr_attr = curr_attr->next;
-      
+
       curr_attr->next = attr;
     }
     break;
   case 'm':
     media = xmalloc(sizeof(sdp_media));
     memset(media, 0, sizeof(sdp_media));
-    sscanf(value, "%as %d %as %as\n", &(media->name),
-	   &(media->port), &(media->transport), 
+    sscanf(value, "%ms %d %ms %ms\n", &(media->name),
+	   &(media->port), &(media->transport),
 	   &(media->format_list));
     media->number_of_ports = 1;
 
@@ -244,7 +244,7 @@ sdp_handle_media_key(sdp_media *media, char key, char *value)
     network = xmalloc(sizeof(sdp_network));
     memset (network, 0, sizeof(sdp_network));
 
-    sscanf(value, "%as %as %as\n", &(network->network_type),
+    sscanf(value, "%ms %ms %ms\n", &(network->network_type),
 	   &(network->address_type), &(network->address));
 
     network->number_of_addresses = 1;
@@ -259,7 +259,7 @@ sdp_handle_media_key(sdp_media *media, char key, char *value)
     bwm = xmalloc(sizeof(sdp_bandwidth_modifier));
     memset (bwm, 0, sizeof(sdp_bandwidth_modifier));
 
-    sscanf(value, "%as:%as\n", &(bwm->modifier), &(bwm->value));
+    sscanf(value, "%ms:%ms\n", &(bwm->modifier), &(bwm->value));
 
     if(media->bandwidth_modifier == NULL)
       media->bandwidth_modifier = bwm;
@@ -271,11 +271,11 @@ sdp_handle_media_key(sdp_media *media, char key, char *value)
     encrypt = xmalloc(sizeof(sdp_encryption));
     memset(encrypt, 0, sizeof(sdp_encryption));
 
-    sscanf(value, "%as:%as\n", &(encrypt->method), &(encrypt->key));
+    sscanf(value, "%ms:%ms\n", &(encrypt->method), &(encrypt->key));
 
     if(media->encryption == NULL)
       media->encryption = encrypt;
-    else 
+    else
       xfree(encrypt);
 
     break;
@@ -293,7 +293,7 @@ sdp_handle_media_key(sdp_media *media, char key, char *value)
       attr->value = NULL;
     else {
       attr->value = xmalloc(strlen(value) - n_char + 1);
-      memset(attr->value, '\0', strlen(value) - n_char + 1); 
+      memset(attr->value, '\0', strlen(value) - n_char + 1);
       strncpy(attr->value, value+n_char+1, strlen(value) - n_char);
     }
 
@@ -303,18 +303,18 @@ sdp_handle_media_key(sdp_media *media, char key, char *value)
       curr_attr = media->attributes;
       while(curr_attr->next != NULL)
 	curr_attr = curr_attr->next;
-      
+
       curr_attr->next = attr;
     }
     break;
   case 'm':
     new_media = xmalloc(sizeof(sdp_media));
     memset(new_media, 0, sizeof(sdp_media));
-    sscanf(value, "%as %d %as %as\n", &(new_media->name),
-	   &(new_media->port), &(new_media->transport), 
+    sscanf(value, "%ms %d %ms %ms\n", &(new_media->name),
+	   &(new_media->port), &(new_media->transport),
 	   &(new_media->format_list));
     new_media->number_of_ports = 1;
-    
+
     media->next = new_media;
     media = media->next;
     break;
@@ -351,18 +351,18 @@ sdp *sdp_parse(char *sdp_string)
       memset(line, '\0', n_char+1);
       strncpy(line, pos, n_char);
       pos += n_char + 1;
-      
+
       if(strchr(line, '=') != NULL) {
 	key = line[0];
 	value = &(line[2]);
 
 	if(media == NULL) {
-	  if((goodkey = sdp_check_key(sessionkeys, current_key, key)) == 1) 
+	  if((goodkey = sdp_check_key(sessionkeys, current_key, key)) == 1)
 	    media = sdp_handle_session_key(session, key, value);
 	  else
 	    printf("Bad Session Key!\n");
 	} else {
-	  if((goodkey = sdp_check_key(mediakeys, current_key, key)) == 1) 
+	  if((goodkey = sdp_check_key(mediakeys, current_key, key)) == 1)
 	    media = sdp_handle_media_key(media, key, value);
 	  else
 	    printf("Bad Media Key!\n");
@@ -371,7 +371,7 @@ sdp *sdp_parse(char *sdp_string)
       xfree(line);
     } while (n_char != 0);
   }
-  
+
   return session;
 }
 
@@ -405,7 +405,7 @@ void sdp_print(sdp *session)
 
     printf("Session Attributes:\n");
     while(current_attribute != NULL) {
-      printf("\tAttribute: %s Value: %s\n", 
+      printf("\tAttribute: %s Value: %s\n",
 	     current_attribute->key, current_attribute->value);
       current_attribute = current_attribute->next;
     }
@@ -446,7 +446,7 @@ sdp_print_media(sdp_media *media)
   if(media->attributes != NULL) {
     printf("\tMedia Attributes:\n");
     while(curr_attr != NULL) {
-      printf("\t\tAttribute: %s Value: %s\n", curr_attr->key, 
+      printf("\t\tAttribute: %s Value: %s\n", curr_attr->key,
 	     curr_attr->value);
       curr_attr = curr_attr->next;
     }
@@ -468,7 +468,7 @@ sdp_make(sdp *session)
 	   session->username, session->session_id, session->version);
   if(session->network != NULL) {
     sprintf(sdp_string, "%s %s %s %s\n", sdp_string,
-	     session->network->network_type, 
+	     session->network->network_type,
 	     session->network->address_type,
 	     session->network->address);
   }
@@ -493,11 +493,11 @@ sdp_make(sdp *session)
 	    session->network->address);
 
   if(session->bandwidth_modifier != NULL)
-    sprintf(sdp_string, "%sb=%s:%s\n", sdp_string, 
-	    session->bandwidth_modifier->modifier, 
+    sprintf(sdp_string, "%sb=%s:%s\n", sdp_string,
+	    session->bandwidth_modifier->modifier,
 	    session->bandwidth_modifier->value);
 
-  sprintf(sdp_string, "%st=%ld %ld\n", sdp_string, 
+  sprintf(sdp_string, "%st=%ld %ld\n", sdp_string,
 	  session->start_time, session->stop_time);
 
   if(session->timezones != NULL) {
@@ -514,14 +514,14 @@ sdp_make(sdp *session)
 
   if(session->encryption != NULL) {
     if(session->encryption->key == NULL)
-      sprintf(sdp_string, "%sk=%s\n", sdp_string, 
+      sprintf(sdp_string, "%sk=%s\n", sdp_string,
 	      session->encryption->method);
     else
-      sprintf(sdp_string, "%sk=%s:%s\n", sdp_string, 
+      sprintf(sdp_string, "%sk=%s:%s\n", sdp_string,
 	      session->encryption->method,
 	      session->encryption->key);
   }
-  
+
   attr = session->attributes;
   while(attr != NULL) {
     sprintf(sdp_string, "%sa=%s:%s\n", sdp_string,
@@ -537,11 +537,11 @@ sdp_make(sdp *session)
 	      media->transport, media->format_list);
     else
       sprintf(sdp_string, "%sm=%s %d %s %s\n", sdp_string,
-	      media->name, media->port, media->transport, 
+	      media->name, media->port, media->transport,
 	      media->format_list);
     if(media->information != NULL)
       sprintf(sdp_string, "%si=%s\n", sdp_string, media->information);
-    
+
     if(media->network != NULL)
       sprintf(sdp_string, "%sc=%s %s %s\n", sdp_string,
 	      media->network->network_type,
@@ -549,20 +549,20 @@ sdp_make(sdp *session)
 	      media->network->address);
 
     if(media->bandwidth_modifier != NULL)
-      sprintf(sdp_string, "%sb=%s:%s\n", sdp_string, 
-	      media->bandwidth_modifier->modifier, 
+      sprintf(sdp_string, "%sb=%s:%s\n", sdp_string,
+	      media->bandwidth_modifier->modifier,
 	      media->bandwidth_modifier->value);
 
     if(media->encryption != NULL) {
       if(media->encryption->key == NULL)
-	sprintf(sdp_string, "%sk=%s\n", sdp_string, 
+	sprintf(sdp_string, "%sk=%s\n", sdp_string,
 		media->encryption->method);
       else
-	sprintf(sdp_string, "%sk=%s:%s\n", sdp_string, 
+	sprintf(sdp_string, "%sk=%s:%s\n", sdp_string,
 		media->encryption->method,
 		media->encryption->key);
     }
-  
+
     attr = media->attributes;
     while(attr != NULL) {
       sprintf(sdp_string, "%sa=%s:%s\n", sdp_string,
@@ -602,8 +602,8 @@ sdp_free(sdp *session)
 
   if(session->email != NULL)
     xfree(session->email);
-  
-  if(session->phone != NULL) 
+
+  if(session->phone != NULL)
     xfree(session->phone);
 
   if(session->bandwidth_modifier != NULL)
@@ -635,7 +635,7 @@ sdp_free(sdp *session)
     media = media->next;
     sdp_free_media(cmedia);
   }
-  
+
   if(session->original != NULL)
     xfree(session->original);
 
@@ -685,7 +685,7 @@ sdp_free_repeat(sdp_repeat *repeat)
   xfree(repeat);
 }
 
-void 
+void
 sdp_free_media(sdp_media *media)
 {
   sdp_attribute *attr, *cattr;
@@ -700,7 +700,7 @@ sdp_free_media(sdp_media *media)
 
   if(media->information != NULL)
     xfree(media->information);
-  
+
   if(media->bandwidth_modifier != NULL)
     sdp_free_bandwidth_modifier(media->bandwidth_modifier);
 

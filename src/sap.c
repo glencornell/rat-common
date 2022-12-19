@@ -3,17 +3,17 @@
  * AUTHOR:   Ivan R. Judson  <judson@mcs.anl.gov>
  *
  * The routines in this file implement parsing and construction of data
- * that's compliant with the Session Announcement Protocol, as specified 
+ * that's compliant with the Session Announcement Protocol, as specified
  * in RFC2974.
  *
- * $Revision: 4412 $ 
+ * $Revision: 4412 $
  * $Date: 2009-04-09 03:13:00 -0700 (Thu, 09 Apr 2009) $
- * 
+ *
  * Copyright (c) 2002 Argonne National Laboratory/University of Chicago
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, is permitted provided that the following conditions 
+ * modification, is permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
@@ -100,8 +100,7 @@ sap_recv(struct sap *s, struct timeval *timeout)
   if(udp_select( &rfd, max_fd, timeout) > 0) {
     if(udp_fd_isset( &rfd, &max_fd, s->s)) {
       uint8_t buffer[SAP_MAX_PACKET_LEN];
-      int     buflen;
-      buflen = udp_recv(s->s, (char *)buffer, SAP_MAX_PACKET_LEN);
+      udp_recv(s->s, (char *)buffer, SAP_MAX_PACKET_LEN);
       packetptr = buffer;
 
       sap_h = (sap_header *)buffer;
@@ -130,7 +129,7 @@ sap_recv(struct sap *s, struct timeval *timeout)
   return FALSE;
 }
 
-void 
+void
 sap_done(struct sap *s)
 {
   udp_exit(s->s);
@@ -140,7 +139,7 @@ sap_done(struct sap *s)
   xfree(s);
 }
 
-void 
+void
 print_sap_packet(sap_packet *p)
 {
   printf("SAP Header Information:\n");
@@ -150,17 +149,17 @@ print_sap_packet(sap_packet *p)
   printf("  Message Type:   %d\n", p->header->message_type);
   printf("  Encrypted Flag: %d\n", p->header->encrypted_payload);
   printf("  Compressed Flag: %d\n", p->header->compressed_payload);
-  printf("  Authentication Length: %d\n", 
+  printf("  Authentication Length: %d\n",
 	 ntohs(p->header->authentication_length));
-  printf("  Authentication Data: %d\n", 
+  printf("  Authentication Data: %zu\n",
 	 p->header->authentication_length ? strlen((char *)p->authentication_data) : 0);
-  printf("  Message ID Hash: %d\n", 
+  printf("  Message ID Hash: %d\n",
 	 ntohs(p->header->message_identifier_hash));
 
-  if(p->header->address_type) 
+  if(p->header->address_type)
     {
       // This is a 128 bit IPv6 address
-      printf("  Originating Source: %d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d\n", 
+      printf("  Originating Source: %d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d.%d\n",
 	     p->originating_source[0], p->originating_source[1],
 	     p->originating_source[2], p->originating_source[3],
 	     p->originating_source[4], p->originating_source[5],
@@ -169,11 +168,11 @@ print_sap_packet(sap_packet *p)
 	     p->originating_source[10], p->originating_source[11],
 	     p->originating_source[12], p->originating_source[13],
 	     p->originating_source[14], p->originating_source[15]);
-    } 
-  else 
+    }
+  else
     {
       // This is a 32 bit IPv4 address
-      printf("  Originating Source: %d.%d.%d.%d\n", 
+      printf("  Originating Source: %d.%d.%d.%d\n",
 	     p->originating_source[0], p->originating_source[1],
 	     p->originating_source[2], p->originating_source[3]);
     }
@@ -181,6 +180,6 @@ print_sap_packet(sap_packet *p)
   if(p->payload_type != NULL)
     printf("  Payload Type: %s\n", p->payload_type);
 
-  printf("  Payload: \n- - - - - - - - - -\n%s- - - - - - - - - -\n", 
+  printf("  Payload: \n- - - - - - - - - -\n%s- - - - - - - - - -\n",
 	 p->payload);
 }

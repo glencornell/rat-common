@@ -183,7 +183,10 @@ static void rewrite_config(struct mbus_config *m)
 	}
 	sprintf(buf, "[MBUS]\nCONFIG_VERSION=%d\nHASHKEY=%s\nENCRYPTIONKEY=%s\nSCOPE=%s\nADDRESS=%s\nPORT=%d\n", 
 		MBUS_CONFIG_VERSION, hashkey, encrkey, MBUS_DEFAULT_SCOPE_NAME, MBUS_DEFAULT_NET_ADDR, MBUS_DEFAULT_NET_PORT);
-	write(m->cfgfd, buf, strlen(buf));
+	if (write(m->cfgfd, buf, strlen(buf)) == -1) {
+          perror("cannot write to config file");
+          abort();
+        }
 	free(hashkey);
 	xfree(encrkey);
 #endif

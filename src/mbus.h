@@ -1,12 +1,12 @@
 /*
  * FILE:    mbus.h
  * AUTHORS: Colin Perkins
- * 
+ *
  * Copyright (c) 1997-2000 University College London
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, is permitted, provided that the following conditions 
+ * modification, is permitted, provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
@@ -47,12 +47,12 @@ struct mbus;
 extern "C" {
 #endif
 
-struct mbus *mbus_init(void  (*cmd_handler)(char *src, char *cmd, char *arg, void *dat), 
+struct mbus *mbus_init(void  (*cmd_handler)(const char *src, const char *cmd, char *arg, void *dat),
 		       void  (*err_handler)(int seqnum, int reason),
-		       char  *addr);
-void         mbus_cmd_handler(struct mbus *m, void  (*cmd_handler)(char *src, char *cmd, char *arg, void *dat));
+		       const char  *addr);
+void         mbus_cmd_handler(struct mbus *m, void  (*cmd_handler)(const char *src, const char *cmd, char *arg, void *dat));
 void         mbus_exit(struct mbus *m);
-int          mbus_addr_valid(struct mbus *m, char *addr);
+int          mbus_addr_valid(struct mbus *m, const char *addr);
 void         mbus_qmsg(struct mbus *m, const char *dest, const char *cmnd, const char *args, int reliable);
 void         mbus_qmsgf(struct mbus *m, const char *dest, int reliable, const char *cmnd, const char *format, ...);
 void         mbus_send(struct mbus *m);
@@ -61,8 +61,8 @@ void         mbus_retransmit(struct mbus *m);
 void         mbus_heartbeat(struct mbus *m, int interval);
 int          mbus_waiting_ack(struct mbus *m);
 int          mbus_sent_all(struct mbus *m);
-char        *mbus_rendezvous_waiting(struct mbus *m, char *addr, char *token, void *data, const long rendezvous_timeout_usec);
-char        *mbus_rendezvous_go(struct mbus *m, char *token, void *data, const long rendezvous_timeout_usec);
+char        *mbus_rendezvous_waiting(struct mbus *m, const char *addr, const char *token, void *data, const long rendezvous_timeout_usec);
+char        *mbus_rendezvous_go(struct mbus *m, const char *token, void *data, const long rendezvous_timeout_usec);
 
 #if defined(__cplusplus)
 }

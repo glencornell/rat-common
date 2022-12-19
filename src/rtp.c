@@ -2694,21 +2694,25 @@ static uint8_t *format_rtcp_sdes(uint8_t *buffer, int buflen, uint32_t ssrc, str
 					packet += add_sdes_item(packet, remaining_len, RTCP_SDES_TOOL, item);
 					break;
 				}
+                                // fall through
 			case 1: item = rtp_get_sdes(session, ssrc, RTCP_SDES_EMAIL);
 				if ((item != NULL) && ((strlen(item) + (size_t) 2) <= remaining_len)) {
 					packet += add_sdes_item(packet, remaining_len, RTCP_SDES_EMAIL, item);
 					break;
 				}
+                                // fall through
 			case 2: item = rtp_get_sdes(session, ssrc, RTCP_SDES_PHONE);
 				if ((item != NULL) && ((strlen(item) + (size_t) 2) <= remaining_len)) {
 					packet += add_sdes_item(packet, remaining_len, RTCP_SDES_PHONE, item);
 					break;
 				}
+                                // fall through
 			case 3: item = rtp_get_sdes(session, ssrc, RTCP_SDES_LOC);
 				if ((item != NULL) && ((strlen(item) + (size_t) 2) <= remaining_len)) {
 					packet += add_sdes_item(packet, remaining_len, RTCP_SDES_LOC, item);
 					break;
 				}
+                                // fall through
 			case 4: item = rtp_get_sdes(session, ssrc, RTCP_SDES_PRIV);
 				if ((item != NULL) && ((strlen(item) + (size_t) 2) <= remaining_len)) {
 					packet += add_sdes_item(packet, remaining_len, RTCP_SDES_PRIV, item);

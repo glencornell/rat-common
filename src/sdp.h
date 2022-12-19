@@ -2,14 +2,14 @@
  * FILE:   sdp.h
  * AUTHOR: Ivan R. Judson <judson@mcs.anl.gov>
  *
- * $Revision: 4412 $ 
+ * $Revision: 4412 $
  * $Date: 2009-04-09 03:13:00 -0700 (Thu, 09 Apr 2009) $
- * 
+ *
  * Copyright (c) 2002 Argonne National Laboratory/University of Chicago
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, is permitted provided that the following conditions 
+ * modification, is permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
@@ -122,7 +122,7 @@ sdp_media *sdp_handle_media_key(sdp_media *media, char key, char *value);
 
 sdp *sdp_parse(char *sdp_string);
 
-void sdp_print(sdp *session); 
+void sdp_print(sdp *session);
 void sdp_print_media(sdp_media *media);
 void sdp_print_network(sdp_network *network);
 

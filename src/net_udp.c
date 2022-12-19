@@ -467,7 +467,7 @@ static const char *udp_host_addr4(void)
 	}
 	assert(hent->h_addrtype == AF_INET);
 	memcpy(&iaddr.s_addr, hent->h_addr, sizeof(iaddr.s_addr));
-	strncpy(hname, inet_ntoa(iaddr), MAXHOSTNAMELEN);
+	strncpy(hname, inet_ntoa(iaddr), MAXHOSTNAMELEN - 1);
 	return (const char*)hname;
 }
 
@@ -1357,7 +1357,7 @@ int udp_recv(socket_udp *s, char *buffer, int buflen)
 	if (len > 0) {
 		return len;
 	}
-	if (errno != ECONNREFUSED) {
+	if (len == -1 && errno != ECONNREFUSED) {
 		socket_error("recvfrom");
 	}
 	return 0;

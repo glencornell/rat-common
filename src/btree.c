@@ -40,7 +40,7 @@ struct s_btree {
 #define BTREE_NODE_MAGIC 0x01010101
 
 #ifdef DEBUG
-static uint32_t btree_count = 0;
+static int btree_count = 0;
 static void
 btree_validate_node(btree_node_t *node, btree_node_t *parent)
 {
