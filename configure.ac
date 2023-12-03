@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.71])
+AC_PREREQ([2.69])
 AC_INIT([librat],[1.2.19])
 AC_CONFIG_SRCDIR([src/base64.c])
 AC_CONFIG_HEADERS([src/uclconf.h:src/config.h.in])
@@ -54,7 +54,7 @@ AS_IF([test "x$ac_cv_c_bigendian" = "xyes"],
 # is char unsigned?
 AC_C_CHAR_UNSIGNED
 #
-# Some of the codecs in rat don't with with unsigned characters. 
+# Some of the codecs in rat don't with with unsigned characters.
 # Force the compiler to use signed chars, to be consistent.
 if test $ac_cv_c_char_unsigned = yes
 then
@@ -77,7 +77,7 @@ fi
 
 ###############################################################################
 # The following causes autoconf to complain.
-case "$host_os" in 
+case "$host_os" in
     *mingw*|*mingw32*)
 	    ;;
 	*)
@@ -99,9 +99,9 @@ AC_REPLACE_FUNCS(vsnprintf)
 
 ###############################################################################
 # If inet_aton is actually needed somewhere, split it out into
-# inet_aton.c and add it to AC_REPLACE_FUNCS 
+# inet_aton.c and add it to AC_REPLACE_FUNCS
 #
-# AC_CHECK_FUNC succeeds on our IRIX 6.2 boxes, but it is not 
+# AC_CHECK_FUNC succeeds on our IRIX 6.2 boxes, but it is not
 # declared anywhere, use egrep header to check (ugh lame, but works)
 dnl AC_CACHE_CHECK(for inet_pton in <arpa/inet.h>, ucl_cv_inet_pton_in_inet_h,
 dnl 	AC_EGREP_HEADER(inet_pton,
@@ -312,21 +312,21 @@ fi
 AC_CACHE_CHECK(for getipnodebyname in <netdb.h>, ucl_cv_getipnodebyname_in_netdb_h,
 	AC_EGREP_HEADER(getipnodebyname,
 		netdb.h,
-		ucl_cv_getipnodebyname_in_netdb_h=yes,	
+		ucl_cv_getipnodebyname_in_netdb_h=yes,
 		ucl_cv_getipnodebyname_in_netdb_h=no))
 if test $ucl_cv_getipnodebyname_in_netdb_h
 then
-	AC_DEFINE([HAVE_GETIPNODEBYNAME],[],[is getipnodebyname() in <netdb.h>]) 
+	AC_DEFINE([HAVE_GETIPNODEBYNAME],[],[is getipnodebyname() in <netdb.h>])
 fi
 
 AC_CACHE_CHECK(for struct addrinfo in <netdb.h>, ucl_cv_st_addrinfo_in_netdb_h,
 	AC_EGREP_HEADER(addrinfo,
 		netdb.h,
-		ucl_cv_st_addrinfo_in_netdb_h=yes,	
+		ucl_cv_st_addrinfo_in_netdb_h=yes,
 		ucl_cv_st_addrinfo_in_netdb_h=no))
 if test $ucl_cv_st_addrinfo_in_netdb_h
 then
-	AC_DEFINE([HAVE_ST_ADDRINFO],[],[have struct addrinfo in <netdb.h>]) 
+	AC_DEFINE([HAVE_ST_ADDRINFO],[],[have struct addrinfo in <netdb.h>])
 fi
 
 AC_CACHE_CHECK(for sin6_len in struct sockaddr_in6, ucl_cv_sin6_len,
@@ -339,7 +339,7 @@ AC_CACHE_CHECK(for sin6_len in struct sockaddr_in6, ucl_cv_sin6_len,
 	])])
 if test $ucl_cv_sin6_len = yes
 then
-	AC_DEFINE([HAVE_SIN6_LEN],[],[have sin6_len in struct sockaddr_in6]) 
+	AC_DEFINE([HAVE_SIN6_LEN],[],[have sin6_len in struct sockaddr_in6])
 fi
 
 AC_CACHE_CHECK(for msg_control in struct msghdr, ucl_cv_control,
@@ -360,7 +360,7 @@ fi
 # Check whether gtk-doc is installed
 
 AC_CHECK_PROG(GTKDOC, gtkdoc-scan, yes, no, $PATH)
-if test "$GTKDOC" = yes 
+if test "$GTKDOC" = yes
 then
 	OPTDOC=doc
 else
@@ -375,7 +375,7 @@ then
         CFLAGS="$CFLAGS -W -Wall -Wwrite-strings -Wbad-function-cast -Wmissing-prototypes -Wcast-qual -Wmissing-declarations"
 fi
 
-case "$host_os" in 
+case "$host_os" in
   *darwin*)
 	dnl Check for 64-bit host gcc - in Snow Leopard+
 	AC_MSG_CHECKING([for 64-bit gcc on OSX])
