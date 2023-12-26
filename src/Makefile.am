@@ -1,5 +1,5 @@
 #
-# Makefile for the common code library project. 
+# Makefile for the common code library project.
 #
 lib_LTLIBRARIES = libuclmmbase.la
 
@@ -63,7 +63,13 @@ uclmmbaseinclude_HEADERS = \
 	rtp.h \
 	sap.h \
 	sdp.h \
-	util.h
+	util.h \
+	config_unix.h \
+	config_win32.h \
+	gettimeofday.h \
+	inet_pton.h \
+	vsnprintf.h \
+	inet_ntop.h
 
 version.h: $(top_srcdir)/VERSION
 	sed -e 's/.*/#define CCL_VERSION "v&"/' $? > $@

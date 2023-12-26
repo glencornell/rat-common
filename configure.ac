@@ -359,13 +359,15 @@ fi
 ###############################################################################
 # Check whether gtk-doc is installed
 
-AC_CHECK_PROG(GTKDOC, gtkdoc-scan, yes, no, $PATH)
-if test "$GTKDOC" = yes
-then
-	OPTDOC=doc
-else
-	OPTDOC=
-fi
+dnl gtkdoc-mktmpl is not available on this platform.  TODO: convert to use doxygen?
+
+dnl AC_CHECK_PROG(GTKDOC, gtkdoc-scan, yes, no, $PATH)
+dnl if test "$GTKDOC" = yes
+dnl then
+dnl 	OPTDOC=doc
+dnl else
+dnl 	OPTDOC=
+dnl fi
 AC_SUBST(OPTDOC)
 
 ###############################################################################
@@ -428,5 +430,6 @@ AC_CONFIG_FILES([Makefile
                  examples/sap/Makefile
                  src/Makefile
                  tests/Makefile
-                 libuclmmbase.pc])
+                 libuclmmbase.pc
+                 librat.spec])
 AC_OUTPUT

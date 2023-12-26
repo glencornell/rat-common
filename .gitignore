@@ -1,6 +1,7 @@
 *.la
 *.lo
 *.o
+*.tar.gz
 *~
 ./Makefile
 .deps/
@@ -37,11 +38,14 @@ examples/sdp/sdpdemo
 install-sh
 lib*.a
 lib*.so
+librat-*/
+librat.spec
 libtool
 libuclmmbase.pc
 ltmain.sh
 m4/
 missing
+rpmbuild
 src/Makefile
 src/stamp-h1
 src/uclconf.h

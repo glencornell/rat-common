@@ -1,13 +1,10 @@
-#
-# Makefile for the common code library project documentation. 
-# This probably requires GNU make.
-#
-
 MODULE=uclmmbase
 SGML_TOPLEVEL=$(MODULE)-driver.sgml
 
 CODE_DIR=../src
 CODE_SRCS=$(CODE_DIR)/*.c $(CODE_DIR)/*.h
+
+all: html
 
 html: sgml $(SGML_TOPLEVEL)
 	-test -d html || mkdir html
@@ -36,5 +33,4 @@ distclean: clean
 	-rm -rf *undocumented.txt
 	-rm -rf uclmmbase-docs.sgml
 
-.PHONY: html sgml tmpl install clean distclean
-
+.PHONY: all html sgml tmpl install clean distclean

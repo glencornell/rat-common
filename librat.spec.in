@@ -1,0 +1,37 @@
+Name:           @PACKAGE_NAME@
+Version:        @PACKAGE_VERSION@
+Release:        1%{?dist}
+Summary:        UCL Common Code Library
+
+License:        Custom
+URL:            https://github.com/glencornell/rat-common
+Source0:        @PACKAGE_NAME@-@PACKAGE_VERSION@.tar.gz
+
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  automake
+BuildRequires:  autoconf
+BuildRequires:  libtool
+
+%description
+Routines common to a number of multimedia tools.  The library
+originates from work on the Robust Audio Tool (RAT) project: these are
+portions that are not directly related to an audio tool and
+potentially useful elsewhere.
+
+%prep
+%setup -q
+
+%build
+%configure --prefix=%{_prefix}
+make %{?_smp_mflags}
+
+%install
+make install DESTDIR=%{buildroot}
+
+%files
+%defattr(-,root,root,-)
+%doc
+%{_includedir}/uclmmbase/*.h
+%{_libdir}/libuclmmbase.*
+%{_libdir}/pkgconfig/libuclmmbase.pc
