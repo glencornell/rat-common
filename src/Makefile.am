@@ -69,7 +69,8 @@ uclmmbaseinclude_HEADERS = \
 	gettimeofday.h \
 	inet_pton.h \
 	vsnprintf.h \
-	inet_ntop.h
+	inet_ntop.h \
+	uclconf.h
 
 version.h: $(top_srcdir)/VERSION
 	sed -e 's/.*/#define CCL_VERSION "v&"/' $? > $@

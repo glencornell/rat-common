@@ -3,7 +3,7 @@ Version:        @PACKAGE_VERSION@
 Release:        1%{?dist}
 Summary:        UCL Common Code Library
 
-License:        Custom
+License:        BSD-Style
 URL:            https://github.com/glencornell/rat-common
 Source0:        @PACKAGE_NAME@-@PACKAGE_VERSION@.tar.gz
 
@@ -37,7 +37,7 @@ make %{?_smp_mflags}
 make install DESTDIR=%{buildroot}
 
 # remove libtool files
-rm -f %{buildroot}/%{_libdir}/libuclmmbase.la
+rm -f %{buildroot}%{_libdir}/libuclmmbase.la
 
 %files
 %defattr(-,root,root,-)
