@@ -1,12 +1,12 @@
 /*
  * FILE:    mbus_config.h
  * AUTHORS: Colin Perkins
- * 
+ *
  * Copyright (c) 1999-2000 University College London
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, is permitted provided that the following conditions 
+ * modification, is permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
@@ -48,7 +48,7 @@ struct mbus_config;
 #define SCOPE_LINKLOCAL       	 1
 #define SCOPE_LINKLOCAL_NAME 	"LINKLOCAL"
 
-#define MBUS_DEFAULT_NET_ADDR 	"224.255.222.239"
+#define MBUS_DEFAULT_NET_ADDR 	"224.0.0.1"
 #define MBUS_DEFAULT_NET_PORT 	 47000
 #define MBUS_DEFAULT_SCOPE    	 SCOPE_HOSTLOCAL
 #define MBUS_DEFAULT_SCOPE_NAME	 SCOPE_HOSTLOCAL_NAME

@@ -26,7 +26,8 @@ libuclmmbase_la_SOURCES = \
 	rtp.c \
 	sap.c \
 	sdp.c \
-	util.c
+	util.c \
+	debug.h
 
 # if NEED_INET_PTON
 # libuclmmbase_la_SOURCES+=inet_pton.c inet_pton.h
