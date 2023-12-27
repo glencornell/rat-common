@@ -1,0 +1,27 @@
+Source: librat
+Section: sound
+Priority: optional
+Maintainer: Glen Cornell <glen.m.cornell@gmail.com>
+Build-Depends: debhelper (>= 10),
+	       autotools-dev,
+	       tcl8.6-dev,
+	       tk8.6-dev,
+	       libasound2-dev
+Standards-Version: 3.9.6
+
+Package: librat
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: UCL Common Code Library
+ Routines common to a number of multimedia tools.  The library
+ originates from work on the Robust Audio Tool (RAT) project: these
+ are portions that are not directly related to an audio tool and
+ potentially useful elsewhere.
+
+Package: librat-devel
+Architecture: any
+Section: libdevel
+Depends: librat (= ${binary:Version}), ${misc:Depends}
+Description: Development files for librat
+ This package contains the headers and pkg-config file for the UCL
+ Common Code Library, also known as librat.
