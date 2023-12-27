@@ -1,0 +1,9 @@
+*.substvars
+.debhelper/
+autoreconf.after
+autoreconf.before
+debhelper-build-stamp
+files
+librat-dev/
+librat/
+tmp/

@@ -18,7 +18,7 @@ Description: UCL Common Code Library
  are portions that are not directly related to an audio tool and
  potentially useful elsewhere.
 
-Package: librat-devel
+Package: librat-dev
 Architecture: any
 Section: libdevel
 Depends: librat (= ${binary:Version}), ${misc:Depends}

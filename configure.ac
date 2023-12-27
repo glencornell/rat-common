@@ -420,6 +420,10 @@ case "$host_os" in
 	;;
 esac
 
+# Check for debian packaging
+AC_CHECK_PROG([DPKG_EXISTS], [dpkg], [yes], [no])
+AM_CONDITIONAL([HAVE_DPKG], [test "$DPKG_EXISTS" = "yes"])
+
 ###############################################################################
 # Done, create the output files....
 AC_CONFIG_FILES([Makefile

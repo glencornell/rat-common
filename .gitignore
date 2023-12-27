@@ -1,3 +1,7 @@
+*.buildinfo
+*.changes
+*.deb
+*.dsc
 *.la
 *.lo
 *.o

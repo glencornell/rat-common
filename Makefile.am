@@ -23,9 +23,25 @@ rpmroot:
 	mkdir -p $(RPMBUILD)/SPECS
 	mkdir -p $(RPMBUILD)/SRPMS
 
-.PHONY: rpm
-rpm: dist-gzip rpmroot
+.PHONY: dist-rpm
+dist-rpm: dist-gzip rpmroot
 	@cp $(distdir).tar.gz $(RPMBUILD)/SOURCES/
 	@cp $(specfile) $(RPMBUILD)/SPECS/
 	cd $(RPMBUILD) ; \
 	rpmbuild -ba --define "_topdir $(RPMBUILD)" $(RPMBUILD)/SPECS/$(specfile)
+
+if HAVE_DPKG
+DPKG_CPU_ARCH = $(shell dpkg --print-architecture)
+else
+DPKG_CPU_ARCH =
+endif
+
+.PHONY: dist-deb
+dist-deb:
+	dpkg-buildpackage -uc -us
+	mv ../$(PACKAGE_NAME)_$(PACKAGE_VERSION)_$(DPKG_CPU_ARCH).buildinfo .
+	mv ../$(PACKAGE_NAME)_$(PACKAGE_VERSION)_$(DPKG_CPU_ARCH).changes .
+	mv ../$(PACKAGE_NAME)_$(PACKAGE_VERSION)_$(DPKG_CPU_ARCH).deb .
+	mv ../$(PACKAGE_NAME)-dev_$(PACKAGE_VERSION)_$(DPKG_CPU_ARCH).deb .
+	mv ../$(PACKAGE_NAME)_$(PACKAGE_VERSION).dsc .
+	mv ../$(PACKAGE_NAME)_$(PACKAGE_VERSION).tar.gz .
